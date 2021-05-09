@@ -1,0 +1,104 @@
+import java.util.*;
+
+class SymptomTree {
+    private static class TreeNode{
+        String symptom;
+        String relation;
+        List<TreeNode> children = new LinkedList<>();
+
+        TreeNode(String s,String r){
+            symptom = s;
+            if(r=="")
+                relation = r;
+            else
+                relation = "--"+r+"--";
+        }
+        TreeNode(String s,String r, List<TreeNode> child){
+            symptom = s;
+            if(r=="")
+                relation = r;
+            else
+                relation = "--"+r+"--";
+            children = child;
+        }
+    }
+
+
+    private static void printTree(TreeNode root){
+        if(root == null) return;
+        int i;
+        Stack<TreeNode> st = new Stack<>();
+        st.push(root);
+        while(!st.isEmpty()){
+            TreeNode curr = st.pop();
+            if(st.isEmpty())
+                System.out.println();
+            if( curr != null){
+                System.out.print(curr.relation+curr.symptom);
+                System.out.println();
+                for( i = curr.children.size()-1; i>=0; i--){
+                    st.push(curr.children.get(i));
+                }
+            }
+        }
+    }
+    
+    private static void findSiblings(TreeNode root, String s){
+        if(root == null) return; 
+        int flag = 0;
+        TreeNode parent = new TreeNode("", "");
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            int len = queue.size();
+            for(int i=0;i<len;i++ ){
+                TreeNode node = queue.poll();
+                //assert node != null;
+                for(int j=0; j<node.children.size(); j++){
+                    if(node.children.get(j).symptom == s){
+                        parent = node;
+                        flag =1; 
+                        break;
+                    }
+                }
+                for(TreeNode item : node.children){
+                	queue.offer(item);
+                }
+                
+                if(flag == 1)
+                    break;
+                
+            }
+            if(flag == 1)
+                break;
+        }
+        for(int i=0; i<parent.children.size(); i++)
+        {
+            System.out.println(parent.children.get(i).symptom+" ");
+        }
+        if(flag==0)
+        System.out.println("Sibling not available for the given query");
+        
+    }
+
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode("Root","");
+        root.children.add(new TreeNode("Abdominal pain", "symptom"));
+        root.children.add(new TreeNode("Chest pain", "symptom"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, right upper quadrant", "location"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, right lower quadrant", "location"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, left upper quadrant", "location"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, left lower quadrant", "location"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, mild", "severity"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, moderate", "severity"));
+        root.children.get(0).children.add(new TreeNode("Abdominal pain, severe", "severity"));
+        root.children.get(1).children.add(new TreeNode("Chest pain, right side", "location"));
+        root.children.get(1).children.add(new TreeNode("Chest pain, left side", "location"));
+        root.children.get(1).children.add(new TreeNode("Chest pain, mild", "severity"));
+        root.children.get(1).children.add(new TreeNode("Chest pain, moderate", "severity"));
+        root.children.get(1).children.add(new TreeNode("Chest pain, severe", "severity"));
+
+        printTree(root);
+        findSiblings(root,"Abdominal pain, right upper quadrant");
+    }
+}
