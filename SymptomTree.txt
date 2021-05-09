@@ -26,17 +26,14 @@ class SymptomTree {
 
     private static void printTree(TreeNode root){
         if(root == null) return;
-        int i;
         Stack<TreeNode> st = new Stack<>();
         st.push(root);
         while(!st.isEmpty()){
             TreeNode curr = st.pop();
-            if(st.isEmpty())
-                System.out.println();
             if( curr != null){
                 System.out.print(curr.relation+curr.symptom);
                 System.out.println();
-                for( i = curr.children.size()-1; i>=0; i--){
+                for(int i = curr.children.size()-1; i>=0; i--){
                     st.push(curr.children.get(i));
                 }
             }
@@ -53,7 +50,6 @@ class SymptomTree {
             int len = queue.size();
             for(int i=0;i<len;i++ ){
                 TreeNode node = queue.poll();
-                //assert node != null;
                 for(int j=0; j<node.children.size(); j++){
                     if(node.children.get(j).symptom == s){
                         parent = node;
@@ -99,6 +95,6 @@ class SymptomTree {
         root.children.get(1).children.add(new TreeNode("Chest pain, severe", "severity"));
 
         printTree(root);
-        findSiblings(root,"Abdominal pain, right upper quadrant");
+        findSiblings(root,"Abdominal pain");
     }
 }
